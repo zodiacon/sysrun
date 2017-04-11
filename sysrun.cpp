@@ -65,9 +65,25 @@ BOOL SetPrivilege(HANDLE hToken, PCTSTR lpszPrivilege, bool bEnablePrivilege) {
 	return TRUE;
 }
 
+BOOL EnableDebugPrivilege(void) {
+	HANDLE hToken;
+	BOOL result;
+	if (!::OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken)) {
+		return FALSE;
+	}
+	result = SetPrivilege(hToken, SE_DEBUG_NAME, TRUE);
+	::CloseHandle(hToken);
+	return result;
+}
+
 int wmain(int argc, const wchar_t* argv[]) {
 	if (argc < 2)
 		return Usage();
+
+	if (FALSE == EnableDebugPrivilege()) {
+		printf("EnableDebugPrivilege failed: Access denied (are you running elevated?)\n");
+		return 1;
+	}
 
 	auto hToken = OpenSystemProcessToken();
 	if (!hToken) {
