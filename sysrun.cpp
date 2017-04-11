@@ -71,7 +71,7 @@ int wmain(int argc, const wchar_t* argv[]) {
 
 	auto hToken = OpenSystemProcessToken();
 	if (!hToken) {
-		printf("Access denied (are you running elevated?)\n");
+		printf("OpenSystemProcessToken failed: Access denied (are you running elevated?)\n");
 		return 1;
 	}
 
@@ -100,7 +100,7 @@ int wmain(int argc, const wchar_t* argv[]) {
 	BOOL impersonated = ::SetThreadToken(nullptr, hDupToken);
 	assert(impersonated);
 	if (!impersonated) {
-		printf("Access denied (are you running elevated?)\n");
+		printf("SetThreadToken failed: Access denied (are you running elevated?)\n");
 		return 1;
 	}
 
@@ -112,7 +112,7 @@ int wmain(int argc, const wchar_t* argv[]) {
 
 	if (!SetPrivilege(hDupToken, SE_ASSIGNPRIMARYTOKEN_NAME, TRUE) ||
 		!SetPrivilege(hDupToken, SE_INCREASE_QUOTA_NAME, TRUE)) {
-		printf("Insufficient priveleges\n");
+		printf("SetPrivilege failed: Insufficient privileges\n");
 		return 1;
 	}
 
