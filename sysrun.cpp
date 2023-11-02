@@ -127,6 +127,7 @@ int wmain(int argc, const wchar_t* argv[]) {
 	::CloseHandle(hCurrentToken);
 
 	if (!SetPrivilege(hDupToken, SE_ASSIGNPRIMARYTOKEN_NAME, TRUE) ||
+		!SetPrivilege(hDupToken, SE_DEBUG_NAME, TRUE) ||
 		!SetPrivilege(hDupToken, SE_INCREASE_QUOTA_NAME, TRUE)) {
 		printf("SetPrivilege failed: Insufficient privileges\n");
 		return 1;
