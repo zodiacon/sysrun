@@ -135,11 +135,13 @@ int wmain(int argc, const wchar_t* argv[]) {
 
 	BOOL ok = ::SetTokenInformation(hPrimary, TokenSessionId, &session, sizeof(session));
 
-	if (!::CreateProcessAsUser(hPrimary, nullptr, const_cast<wchar_t*>(commandLine.c_str()), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi)) {
+	if (!::CreateProcessAsUser(hPrimary, nullptr, commandLine.data(), nullptr, nullptr, FALSE, 0, nullptr, nullptr, &si, &pi)) {
 		printf("Failed to create process (error=%d)\n", ::GetLastError());
 	}
 	else {
 		printf("Process created: %d\n", pi.dwProcessId);
+		::CloseHandle(pi.hProcess);
+		::CloseHandle(pi.hThread);
 	}
 
 	return 0;
